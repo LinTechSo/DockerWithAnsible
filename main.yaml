@@ -1,0 +1,38 @@
+---
+
+- hosts: all
+  become: yes
+  tasks:
+   - name: install python and dependencies on redhats
+     yum: name=python3-pip state=present  update_cache=yes
+     when: ansible_os_family == "RedHat"
+
+   - name: install python and dependencies on debians
+     apt: name=python3-pip state=present update_cache=yes
+     when: ansible_os_family == "Debian"
+
+   - pip:
+        name: requests
+        name: bs4
+        executable: pip-3
+
+   - name: copy shecan python script to setting DNS [using shecan.ir ips]
+     template:
+         src: shecan.py
+         dest: /root/shecan.py
+   - name: execute python script and change dns resolve conf file
+     shell: python3 /root/shecan.py
+
+   - name: install docker at end
+     shell: curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
+     register: results
+
+   - name: show results
+     debug: msg={{ results.stdout_lines }} 
+    
+   - name: start docker docker service
+     service: name=docker state=started  enabled=yes
+     register: result
+   - name: show starting result
+     debug: msg={{ result }}
+
