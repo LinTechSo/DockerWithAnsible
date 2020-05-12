@@ -1,7 +1,6 @@
 #!/bin/python
 ## python web scraping script
 ### Automating Changing resolv config for docker installation
-#import modules
 import os
 import requests
 
@@ -23,5 +22,5 @@ for dns in res:
         os.system(f'''sudo echo 'nameserver {DnsAddress}' >> /etc/resolv.conf''')
         print("correct")
     except socket.error:
-        print("Error")
+        print("Cant change resolv config file")
 print("Done!")
