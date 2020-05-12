@@ -3,6 +3,7 @@
 import os
 import requests
 
+import socket
 from bs4 import BeautifulSoup
 
 proxy={}
@@ -13,6 +14,10 @@ result = BeautifulSoup(response.text ,'html.parser' )
 res = result.find_all('span' , attrs={'class':'shecan-dns-ips'}) 
 for dns in res:
     DnsAddress = dns.text
-    #print(DnsAddress)
-    os.system(f'''sudo echo 'nameserver {DnsAddress}' >> /etc/resolv.conf''')
+    try:
+        socket.inet_aton(DnsAddress)
+        os.system(f'''sudo echo 'nameserver {DnsAddress}' >> /etc/resolv.conf''')
+        print("correct")
+    except socket.error:
+        print("Error")
 print("Done!")
