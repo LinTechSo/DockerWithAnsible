@@ -14,7 +14,6 @@
    - pip:
         name: requests
         name: bs4
-        name: sockets
         executable: pip-3
 
    - name: copy shecan python script to setting DNS [using shecan.ir ips]
