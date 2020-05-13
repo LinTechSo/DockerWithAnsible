@@ -28,6 +28,8 @@
    - name: remove old docker in debians
      shell:  apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
      when: ansible_os_family == "Debian"
+   - name: replace shecan resolv conf with our default resolv conf
+     shell: mv -f /tmp/resolv.conf /etc/resolv.conf
 
    - name: install docker at end
      shell: curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
