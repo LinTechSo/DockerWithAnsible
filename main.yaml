@@ -1,6 +1,6 @@
 ---
 
-- hosts: all
+- hosts: parham
   become: yes
   tasks:
    - name: install python and dependencies on redhats
@@ -11,10 +11,11 @@
      apt: name=python3-pip state=present update_cache=yes
      when: ansible_os_family == "Debian"
 
-   - pip:
-        name: requests
-        name: bs4
-        executable: pip-3
+   - name: install python modules
+     shell: pip3 install requests
+
+   - name: install python modules2
+     shell: pip3 install bs4
 
    - name: copy shecan python script to setting DNS [using shecan.ir ips]
      template:
