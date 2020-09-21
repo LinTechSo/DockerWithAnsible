@@ -1,6 +1,6 @@
 ---
 
-- hosts: all
+- hosts: localhost
   become: yes
   tasks:
    - name: install python and dependencies on redhats
@@ -19,7 +19,6 @@
 
    - name: copy shecan python script to setting DNS [using shecan.ir ips]
      copy:
-         remote_src: yes 
          src: shecan.py
          dest: /root/shecan.py
 
@@ -31,22 +30,26 @@
      when: ansible_os_family == "RedHat"
 
    - name: remove old docker in debians
-     shell:  apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+     shell:  apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common -y
      when: ansible_os_family == "Debian"
+     ignore_errors: true
 
    - name: replace shecan resolv conf with our default resolv conf
      shell: mv -f /tmp/resolv.conf /etc/resolv.conf
 
    - name: install docker at end
-     get_url:
-       url: https://get.docker.com
-       dest: get-docker.sh
+     shell: curl -fsSL https://get.docker.com -o get-docker.sh
+     ignore_errors: true
+     when: ansible_os_family == "RedHat"
 
    - name: install docker 
-     command: sh get-docker.sh
+     shell: sh get-docker.sh /dev/null 2>&1
+     when: ansible_os_family == "RedHat"
+     ignore_errors: true
 
-   - name: show results
-     debug: msg={{ results.stdout_lines }} 
+   - name: install docker on ubuntu
+     apt: name=docker-ce  update_cache=yes force_apt_get=yes cache_valid_time=3600
+     when: ansible_os_family == "Debian"
     
    - name: start docker docker service
      service: name=docker state=started  enabled=yes
