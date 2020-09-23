@@ -36,9 +36,23 @@
 
    - name: replace shecan resolv conf with our default resolv conf
      shell: mv -f /tmp/resolv.conf /etc/resolv.conf
+     
+   - name: install redhat docker dependencies
+     yum: name={{ item }} state=installed
+     with_items:
+         - yum-utils
+         - lvm2
+         - device-mapper-persistent-data
+   - name: add repo
+     yum_repository:
+         name: docker repo
+         description: docker-ce.repo
+         baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+         enabled: yes
+     ignore_errors: true 
 
    - name: install docker at end
-     shell: curl -fsSL https://get.docker.com -o get-docker.sh
+     yum: name=docker state=present 
      ignore_errors: true
      when: ansible_os_family == "RedHat"
 
