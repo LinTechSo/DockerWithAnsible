@@ -1,6 +1,6 @@
 ---
 
-- hosts: localhost
+- hosts: web
   become: yes
   tasks:
    - name: install python and dependencies on redhats
@@ -54,13 +54,7 @@
 
    - name: install docker at end
      yum: name=docker state=present 
-     ignore_errors: true
      when: ansible_os_family == "RedHat"
-
-   - name: install docker 
-     shell: sh get-docker.sh /dev/null 2>&1
-     when: ansible_os_family == "RedHat"
-     ignore_errors: true
 
    - name: install docker on ubuntu
      apt: name=docker-ce  update_cache=yes force_apt_get=yes cache_valid_time=3600
@@ -69,7 +63,9 @@
    - name: start docker docker service
      service: name=docker state=started  enabled=yes
      register: result
+     ignore_errors: true
 
    - name: show starting result
      debug: msg={{ result }}
+     ignore_errors: true
 
