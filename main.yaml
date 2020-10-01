@@ -43,6 +43,7 @@
          - yum-utils
          - lvm2
          - device-mapper-persistent-data
+     when: ansible_os_family == "RedHat"
          
    - name: add repo
      yum_repository:
@@ -57,7 +58,7 @@
      when: ansible_os_family == "RedHat"
 
    - name: install docker on ubuntu
-     apt: name=docker-ce  update_cache=yes force_apt_get=yes cache_valid_time=3600
+     apt: name=docker.io  update_cache=yes force_apt_get=yes cache_valid_time=3600
      when: ansible_os_family == "Debian"
     
    - name: start docker docker service
