@@ -58,7 +58,10 @@
      when: ansible_os_family == "RedHat"
 
    - name: install docker on ubuntu
-     apt: name=docker.io  update_cache=yes force_apt_get=yes cache_valid_time=3600
+     apt: name={{ item }}  update_cache=yes force_apt_get=yes cache_valid_time=3600
+     with_items:
+          - docker
+          - docker.io
      when: ansible_os_family == "Debian"
     
    - name: start docker docker service
